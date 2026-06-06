@@ -78,7 +78,7 @@ export default function AdminLayout() {
       <div className="px-3 py-4 border-t border-white/10 space-y-1">
         {event && (
           <Link
-            to={`/invite/preview`}
+            to={`/invite/preview?event_id=${selectedEventId || ''}`}
             target="_blank"
             className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-stone-300 hover:bg-white/10 hover:text-white transition-all duration-150"
           >

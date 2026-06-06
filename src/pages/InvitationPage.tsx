@@ -1,5 +1,6 @@
 ﻿import { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
+import { useEvent } from '../contexts/EventContext';
 import { supabase } from '../lib/supabase';
 import { DrinkPreference, EventSettings, Guest, GuestbookMessage } from '../lib/types';
 import QRCodeDisplay from '../components/QRCodeDisplay';
@@ -300,6 +301,50 @@ export default function InvitationPage() {
         setLoadError('No invitation token provided.');
         setIsLoading(false);
         return;
+      }
+      // special preview mode: allow opening /invite/preview?event_id=... to render a preview
+      if (token === 'preview') {
+        const eventId = searchParams.get('event_id');
+        try {
+          if (!eventId) throw new Error('No event_id provided for preview.');
+          const { data: eventData, error: eventError } = await supabase
+            .from('event_settings')
+            .select('*')
+            .eq('id', eventId)
+            .single();
+          if (eventError) throw eventError;
+          if (!eventData) throw new Error('Event not found for preview.');
+
+          // create a lightweight mock guest for preview
+          const mockGuest = {
+            id: 'preview-guest',
+            name: 'Cher invité',
+            email: null,
+            phone: null,
+            table_name: 'Preview Table',
+            seats: 1,
+            status: 'pending',
+            checked_in: false,
+            checked_in_at: null,
+            created_at: null,
+            updated_at: null,
+            qr_token: 'preview',
+          } as unknown as Guest;
+
+          setEvent(eventData as EventSettings);
+          setGuest(mockGuest);
+          setDbGuestbook([]);
+          setDrinks({ ...DEFAULT_DRINKS });
+          setPresence(null);
+          saveInvitationCache(token, { event: eventData as EventSettings, guest: mockGuest, dbGuestbook: [], drinks: { ...DEFAULT_DRINKS }, presence: null });
+          setIsLoading(false);
+          return;
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : String(err);
+          setLoadError(msg);
+          setIsLoading(false);
+          return;
+        }
       }
 
       if (!cachedInvitation) {
