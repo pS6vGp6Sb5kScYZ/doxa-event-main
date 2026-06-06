@@ -5,6 +5,7 @@ import {
   LogOut, Heart, Menu, ExternalLink, Sparkles
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabase';
 import { useEvent } from '../contexts/EventContext';
 
 const navItems = [
@@ -77,14 +78,25 @@ export default function AdminLayout() {
 
       <div className="px-3 py-4 border-t border-white/10 space-y-1">
         {event && (
-          <Link
-            to={`/invite/preview?event_id=${selectedEventId || ''}`}
-            target="_blank"
+          <button
+            type="button"
+            onClick={async () => {
+              try {
+                // try to fetch a guest token for the selected event while authenticated
+                if (!selectedEventId) return;
+                const { data } = await supabase.from('guests').select('qr_token').eq('event_id', selectedEventId).limit(1).single();
+                const token = data?.qr_token || '';
+                if (token) window.open(`/invite/${token}`, '_blank');
+                else window.open('/invite', '_blank');
+              } catch (e) {
+                window.open('/invite', '_blank');
+              }
+            }}
             className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-stone-300 hover:bg-white/10 hover:text-white transition-all duration-150"
           >
             <ExternalLink className="w-4 h-4" />
             Voir l'invitation
-          </Link>
+          </button>
         )}
         <button
           onClick={handleSignOut}
