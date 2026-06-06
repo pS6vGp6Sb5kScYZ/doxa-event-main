@@ -1,6 +1,5 @@
 ﻿import { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { useEvent } from '../contexts/EventContext';
 import { supabase } from '../lib/supabase';
 import { DrinkPreference, EventSettings, Guest, GuestbookMessage } from '../lib/types';
 import QRCodeDisplay from '../components/QRCodeDisplay';
