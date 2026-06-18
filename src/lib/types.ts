@@ -14,6 +14,8 @@ export interface EventSettings {
   reception_location: string;
   reception_address: string;
   reception_time: string;
+  ceremony_map_embed: string | null;
+  reception_map_embed: string | null;
   couple_photo_url: string;
   gallery_photos: string[];
   background_music_url: string;

@@ -536,6 +536,15 @@ export default function InvitationPage() {
     ? formatFrenchDate(new Date(new Date(event.event_date).getTime() - 24 * 60 * 60 * 1000).toISOString())
     : null;
 
+  const getIframeSrc = (html: string | null | undefined) => {
+    if (!html) return null;
+    const match = html.match(/<iframe\b[^>]*\bsrc=(['"])(.*?)\1[^>]*>/i);
+    return match ? match[2] : null;
+  };
+
+  const ceremonyMapSrc = getIframeSrc(event?.ceremony_map_embed);
+  const receptionMapSrc = getIframeSrc(event?.reception_map_embed);
+
   const displayedGuestbook = dbGuestbook.length
     ? dbGuestbook.map((m) => ({
         name: m.author_name,
@@ -648,14 +657,42 @@ export default function InvitationPage() {
             <p className="font-serif text-lg">{ceremonyLocation}</p>
             <p className="text-sm text-muted-foreground mt-2">📍 {ceremonyAddress}</p>
             <p className="text-sm text-muted-foreground mt-1">🕐 {ceremonyTime}</p>
-            <a href="#" className="inline-block mt-4 text-xs tracking-widest text-primary font-medium hover:translate-x-1 transition-transform">DIRECTIONS →</a>
+            {ceremonyMapSrc ? (
+              <div className="mt-4 overflow-hidden rounded-xl border border-border bg-card">
+                <iframe
+                  title="Carte de la cérémonie"
+                  src={ceremonyMapSrc}
+                  className="w-full h-56"
+                  style={{ minHeight: 200 }}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  allowFullScreen
+                />
+              </div>
+            ) : (
+              <a href="#" className="inline-block mt-4 text-xs tracking-widest text-primary font-medium hover:translate-x-1 transition-transform">DIRECTIONS →</a>
+            )}
           </Section>
           <Section delay={200}>
             <SectionTitle icon="✿">Reception</SectionTitle>
             <p className="font-serif text-lg">{receptionLocation}</p>
             <p className="text-sm text-muted-foreground mt-2">📍 {receptionAddress}</p>
             <p className="text-sm text-muted-foreground mt-1">🕐 {receptionTime}</p>
-            <a href="#" className="inline-block mt-4 text-xs tracking-widest text-primary font-medium hover:translate-x-1 transition-transform">DIRECTIONS →</a>
+            {receptionMapSrc ? (
+              <div className="mt-4 overflow-hidden rounded-xl border border-border bg-card">
+                <iframe
+                  title="Carte de la réception"
+                  src={receptionMapSrc}
+                  className="w-full h-56"
+                  style={{ minHeight: 200 }}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  allowFullScreen
+                />
+              </div>
+            ) : (
+              <a href="#" className="inline-block mt-4 text-xs tracking-widest text-primary font-medium hover:translate-x-1 transition-transform">DIRECTIONS →</a>
+            )}
           </Section>
         </div>
 

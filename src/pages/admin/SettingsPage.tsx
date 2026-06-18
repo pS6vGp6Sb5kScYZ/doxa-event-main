@@ -391,6 +391,18 @@ export default function SettingsPage() {
             </div>
 
             <div>
+              <label className="block text-xs font-medium text-stone-500 uppercase tracking-wide mb-1.5">Carte Google Maps (iframe)</label>
+              <textarea
+                className="input-field resize-none"
+                rows={3}
+                value={form.ceremony_map_embed || ''}
+                onChange={e => setForm({ ...form, ceremony_map_embed: e.target.value })}
+                placeholder="Collez ici le code iframe de Google Maps pour la cérémonie"
+              />
+              <p className="text-xs text-stone-400 mt-1">Exemple : &lt;iframe src=\"...\" width=\"600\" height=\"450\" ...&gt;&lt;/iframe&gt;</p>
+            </div>
+
+            <div>
               <label className="block text-xs font-medium text-stone-500 uppercase tracking-wide mb-1.5">Horaire</label>
               <input
                 className="input-field"
@@ -423,6 +435,18 @@ export default function SettingsPage() {
                 value={form.reception_address || ''}
                 onChange={e => setForm({ ...form, reception_address: e.target.value })}
               />
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-stone-500 uppercase tracking-wide mb-1.5">Carte Google Maps (iframe)</label>
+              <textarea
+                className="input-field resize-none"
+                rows={3}
+                value={form.reception_map_embed || ''}
+                onChange={e => setForm({ ...form, reception_map_embed: e.target.value })}
+                placeholder="Collez ici le code iframe de Google Maps pour la réception"
+              />
+              <p className="text-xs text-stone-400 mt-1">Exemple : &lt;iframe src=\"...\" width=\"600\" height=\"450\" ...&gt;&lt;/iframe&gt;</p>
             </div>
 
             <div>
