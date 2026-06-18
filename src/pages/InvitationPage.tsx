@@ -278,7 +278,7 @@ export default function InvitationPage() {
     { name: 'Couple Hon. Patrick Eshiba', date: '28/05/2026', tag: 'COUPLE', title: 'Congratulations!', msg: 'Thank you!' },
     { name: 'Joe Calrson', date: '30/05/2026', tag: 'COUPLE', title: 'Congratulations!', msg: 'Thank you' },
   ]);
-  const [gbName, setGbName] = useState('Couple Safari');
+  const [gbName, setGbName] = useState('');
   const [gbMsg, setGbMsg] = useState('');
   const [savingPresence, setSavingPresence] = useState(false);
   const [savingDrinks, setSavingDrinks] = useState(false);
@@ -332,6 +332,7 @@ export default function InvitationPage() {
 
           setEvent(eventData as EventSettings);
           setGuest(mockGuest);
+          setGbName(mockGuest.name || '');
           setDbGuestbook([]);
           setDrinks({ ...DEFAULT_DRINKS });
           setPresence(null);
@@ -363,6 +364,7 @@ export default function InvitationPage() {
         if (!eventData) throw new Error('Event not found');
 
         setGuest(guestData);
+        setGbName(guestData.name || '');
         const newPresence = guestData.status === 'confirmed' ? 'present' : guestData.status === 'declined' ? 'absent' : null;
         setPresence(newPresence);
         setEvent(eventData);

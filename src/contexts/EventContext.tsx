@@ -70,15 +70,22 @@ export function EventProvider({ children }: { children: React.ReactNode }) {
     const eventsList = (data || []) as EventSettings[];
     setEvents(eventsList);
 
-    if (eventsList.length > 0) {
-      if (!selectedEventId || !eventsList.find(e => e.id === selectedEventId)) {
-        const firstId = eventsList[0].id;
-        setSelectedEventId(firstId);
-        localStorage.setItem('selectedEventId', firstId);
-      }
+    const storedSelectedEventId = localStorage.getItem('selectedEventId');
+    let nextSelectedEventId = storedSelectedEventId || selectedEventId;
+
+    if (eventsList.length === 0) {
+      nextSelectedEventId = null;
+      localStorage.removeItem('selectedEventId');
+    } else if (!nextSelectedEventId || !eventsList.find(e => e.id === nextSelectedEventId)) {
+      nextSelectedEventId = eventsList[0].id;
+      localStorage.setItem('selectedEventId', nextSelectedEventId);
     }
 
-    saveEventCache(eventsList, selectedEventId || (eventsList[0]?.id ?? null));
+    if (nextSelectedEventId !== selectedEventId) {
+      setSelectedEventId(nextSelectedEventId);
+    }
+
+    saveEventCache(eventsList, nextSelectedEventId);
     setLoading(false);
   };
 
