@@ -132,9 +132,9 @@ export default function SettingsPage() {
       setMessage({ type: 'error', text: error.message });
       setSaving(false);
     } else {
-      setMessage({ type: 'success', text: 'Événement supprimé avec succès.' });
       selectEvent(null);
-      refresh();
+      await refresh();
+      setMessage({ type: 'success', text: 'Événement supprimé avec succès.' });
       setSaving(false);
     }
   };
