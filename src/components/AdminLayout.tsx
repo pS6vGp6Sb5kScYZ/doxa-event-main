@@ -42,7 +42,7 @@ export default function AdminLayout() {
         {events.length > 0 && (
           <select
             value={selectedEventId || ''}
-            onChange={(e) => selectEvent(e.target.value)}
+            onChange={(e) => selectEvent(e.target.value || null)}
             className="w-full px-2.5 py-1.5 bg-white/10 border border-white/20 rounded-lg text-sm text-white placeholder-stone-300 focus:outline-none focus:border-terracotta-400"
           >
             <option value="" className="bg-bark-900 text-white">-- Sélectionner --</option>

@@ -133,6 +133,13 @@ export default function SettingsPage() {
       setSaving(false);
     } else {
       selectEvent(null);
+      try {
+        localStorage.removeItem('doxa:event_settings_cache_v1');
+        localStorage.removeItem('selectedEventId');
+        localStorage.removeItem(getSettingsCacheKey(event.id));
+      } catch (e) {
+        // ignore localStorage errors
+      }
       await refresh();
       setMessage({ type: 'success', text: 'Événement supprimé avec succès.' });
       setSaving(false);

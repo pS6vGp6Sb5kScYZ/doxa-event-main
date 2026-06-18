@@ -7,7 +7,7 @@ interface EventContextType {
   event: EventSettings | null;
   events: EventSettings[];
   selectedEventId: string | null;
-  selectEvent: (id: string) => void;
+  selectEvent: (id: string | null) => void;
   loading: boolean;
   refresh: () => Promise<void>;
 }
@@ -95,15 +95,16 @@ export function EventProvider({ children }: { children: React.ReactNode }) {
 
   const event = selectedEventId ? events.find(e => e.id === selectedEventId) || null : null;
 
-  const selectEvent = (id: string) => {
-    setSelectedEventId(id);
-    if (id) {
-      localStorage.setItem('selectedEventId', id);
+  const selectEvent = (id: string | null) => {
+    const nextId = id || null;
+    setSelectedEventId(nextId);
+    if (nextId) {
+      localStorage.setItem('selectedEventId', nextId);
     } else {
       localStorage.removeItem('selectedEventId');
     }
 
-    saveEventCache(events, id);
+    saveEventCache(events, nextId);
   };
 
   return (

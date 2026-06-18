@@ -544,8 +544,30 @@ export default function InvitationPage() {
     return match ? match[2] : null;
   };
 
+  const getMapUrlFromEmbed = (html: string | null | undefined) => {
+    const src = getIframeSrc(html);
+    if (!src) return null;
+    // Google Maps share URLs and embed URLs have the URL in the src attribute
+    // Extract the URL directly from the iframe src
+    return src;
+  };
+
+  const getDirectionsLink = (address: string | null | undefined, mapUrl: string | null) => {
+    if (mapUrl) {
+      // If we have a map URL from the iframe, use it directly
+      return mapUrl;
+    }
+    // Fallback: Create a Google Maps search URL from the address
+    if (address) {
+      return `https://www.google.com/maps/search/${encodeURIComponent(address)}`;
+    }
+    return null;
+  };
+
   const ceremonyMapSrc = getIframeSrc(event?.ceremony_map_embed);
   const receptionMapSrc = getIframeSrc(event?.reception_map_embed);
+  const ceremonyDirectionsLink = getDirectionsLink(ceremonyAddress, getMapUrlFromEmbed(event?.ceremony_map_embed));
+  const receptionDirectionsLink = getDirectionsLink(receptionAddress, getMapUrlFromEmbed(event?.reception_map_embed));
 
   const displayedGuestbook = dbGuestbook.length
     ? dbGuestbook.map((m) => ({
@@ -671,8 +693,16 @@ export default function InvitationPage() {
                   allowFullScreen
                 />
               </div>
-            ) : (
-              <a href="#" className="inline-block mt-4 text-xs tracking-widest text-primary font-medium hover:translate-x-1 transition-transform">DIRECTIONS →</a>
+            ) : null}
+            {ceremonyDirectionsLink && (
+              <a 
+                href={ceremonyDirectionsLink} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-block mt-4 text-xs tracking-widest text-primary font-medium hover:translate-x-1 transition-transform"
+              >
+                DIRECTIONS →
+              </a>
             )}
           </Section>
           <Section delay={200}>
@@ -692,8 +722,16 @@ export default function InvitationPage() {
                   allowFullScreen
                 />
               </div>
-            ) : (
-              <a href="#" className="inline-block mt-4 text-xs tracking-widest text-primary font-medium hover:translate-x-1 transition-transform">DIRECTIONS →</a>
+            ) : null}
+            {receptionDirectionsLink && (
+              <a 
+                href={receptionDirectionsLink} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-block mt-4 text-xs tracking-widest text-primary font-medium hover:translate-x-1 transition-transform"
+              >
+                DIRECTIONS →
+              </a>
             )}
           </Section>
         </div>
