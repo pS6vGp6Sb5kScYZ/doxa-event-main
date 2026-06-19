@@ -286,6 +286,12 @@ export default function InvitationPage() {
   const [feedbackMsg, setFeedbackMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
 
+  // Force stack when combined name width exceeds container (mobile overflow detection)
+  const nameContainerRef = useRef<HTMLDivElement | null>(null);
+  const groomNameRef = useRef<HTMLSpanElement | null>(null);
+  const brideNameRef = useRef<HTMLSpanElement | null>(null);
+  const [forceStack, setForceStack] = useState(false);
+
   const { days, hours, minutes, seconds } = useCountdown(event ? new Date(event.event_date) : WEDDING_DATE);
   const formattedDate = formatFrenchDate(event?.event_date ?? WEDDING_DATE.toISOString());
 
@@ -544,6 +550,27 @@ export default function InvitationPage() {
     return match ? match[2] : null;
   };
 
+  // Measure name widths and force stacking when they don't fit on one line
+  useEffect(() => {
+    const checkOverflow = () => {
+      const container = nameContainerRef.current;
+      const g = groomNameRef.current;
+      const b = brideNameRef.current;
+      if (!container || !g || !b) return setForceStack(false);
+
+      const gapEstimate = 24; // estimated gap between names
+      const totalWidth = g.scrollWidth + b.scrollWidth + gapEstimate;
+      const available = container.clientWidth - 12; // small padding allowance
+      setForceStack(totalWidth > available);
+    };
+
+    checkOverflow();
+    let raf = 0;
+    const onResize = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(checkOverflow); };
+    window.addEventListener('resize', onResize);
+    return () => { window.removeEventListener('resize', onResize); cancelAnimationFrame(raf); };
+  }, [groomName, brideName]);
+
   const getMapUrlFromEmbed = (html: string | null | undefined) => {
     const src = getIframeSrc(html);
     if (!src) return null;
@@ -604,15 +631,18 @@ export default function InvitationPage() {
             <div className="ornament mb-6 text-xs">✦</div>
             <h1 className="font-script text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-snug shimmer-title tracking-tight">
               {(groomName || brideName) ? (
-                <span className="inline-flex items-center justify-center gap-3 sm:flex-col sm:gap-0">
-                  <span className="whitespace-nowrap text-2xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight">
+                <div
+                  ref={nameContainerRef}
+                  className={`inline-flex items-center justify-center gap-3 ${forceStack ? 'flex-col' : 'flex-row'} sm:flex-col sm:gap-0`}
+                >
+                  <span ref={groomNameRef} className="whitespace-nowrap text-2xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight">
                     {groomName}
                   </span>
                   <span className="hidden sm:inline-block my-2 text-4xl md:text-5xl text-primary-foreground/90">&amp;</span>
-                  <span className="whitespace-nowrap text-2xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight">
+                  <span ref={brideNameRef} className="whitespace-nowrap text-2xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight">
                     {brideName}
                   </span>
-                </span>
+                </div>
               ) : (
                 <>Invitation</>
               )}
