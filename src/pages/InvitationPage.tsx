@@ -530,7 +530,7 @@ export default function InvitationPage() {
   const receptionTime = event?.reception_time ?? '16h30 - 19h00';
   const tableName = guest?.table_name ?? "Sweet Star of Love";
   const seats = guest?.seats ?? 1;
-  const dressCode = event?.dress_code ?? 'Terracotta & White Elegance';
+  const dressCode = event?.dress_code ?? 'smart evening outfit';
   const alcoholDrinks = event?.drinks_with_alcohol?.length ? event.drinks_with_alcohol : ['Castel', 'Nkoy', 'Heineken', 'Beaufort'];
   const nonAlcoholicDrinks = event?.drinks_without_alcohol?.length ? event.drinks_without_alcohol : ['Savana', 'Sprite', 'Coca', 'Maltina'];
 
@@ -650,9 +650,11 @@ export default function InvitationPage() {
         <Section delay={150}>
           <SectionTitle icon="🗓">Countdown to the Big Day</SectionTitle>
           {days === 0 && hours === 0 && minutes === 0 ? (
-            <div className="text-center py-8 space-y-4">
-              <div className="text-6xl md:text-7xl font-script shimmer-title" style={{ color: 'rgb(246, 114, 43)' }}>
-                TODAY IS THE DAY!
+            <div className="text-center py-10 space-y-4"> 
+              <div className="md:text-6xl lg:text-7xl pt-4 font-script shimmer-title leading-none  text-center mx-auto max-w-3xl"
+                style={{ textShadow: '0 6px 24px rgba(0, 0, 0, 0.18)', minHeight: '7rem'}}
+              >
+                Today is the day ! 
               </div>
               <p className="text-lg text-stone-600 font-serif italic">
                 The big day has arrived. Enjoy every moment! 💕
@@ -701,7 +703,7 @@ export default function InvitationPage() {
                 rel="noopener noreferrer"
                 className="inline-block mt-4 text-xs tracking-widest text-primary font-medium hover:translate-x-1 transition-transform"
               >
-                DIRECTIONS →
+                LOCATION →
               </a>
             )}
           </Section>
@@ -730,7 +732,7 @@ export default function InvitationPage() {
                 rel="noopener noreferrer"
                 className="inline-block mt-4 text-xs tracking-widest text-primary font-medium hover:translate-x-1 transition-transform"
               >
-                DIRECTIONS →
+                LOCATION →
               </a>
             )}
           </Section>
@@ -766,7 +768,7 @@ export default function InvitationPage() {
           <div className="space-y-2 text-sm">
             <p><span className="text-muted-foreground">Table:</span> <span className="font-serif font-medium">{tableName}</span></p>
             <p><span className="text-muted-foreground">Seats:</span> {seats}</p>
-            <p><span className="text-muted-foreground">Dress code:</span> <span className="font-serif font-medium">{dressCode}</span></p>
+            <p><span className="text-muted-foreground">Dress code:</span> <span className="font-serif font-medium">Smart Evening Outfit</span></p>
           </div>
         </Section>
 
