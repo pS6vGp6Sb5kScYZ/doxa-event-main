@@ -3,6 +3,7 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { DrinkPreference, EventSettings, Guest, GuestbookMessage } from '../lib/types';
 import QRCodeDisplay from '../components/QRCodeDisplay';
+import NotFound404 from '../components/NotFound404';
 
 type GuestbookEntry = {
   name: string;
@@ -612,12 +613,12 @@ export default function InvitationPage() {
 
   if (loadError) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background p-6 text-center">
-        <div>
-          <p className="text-lg font-medium">Invitation not found</p>
-          <p className="text-sm text-muted-foreground mt-2">{loadError}</p>
-        </div>
-      </div>
+      <NotFound404 
+        title="Invitation introuvable"
+        message={loadError}
+        icon="invitation"
+        showHomeButton={true}
+      />
     );
   }
 
@@ -718,7 +719,7 @@ export default function InvitationPage() {
             <SectionTitle icon="♡">Ceremony</SectionTitle>
             <p className="font-serif text-lg">{ceremonyLocation}</p>
             <p className="text-sm text-muted-foreground mt-2">📍 {ceremonyAddress}</p>
-            <p className="text-sm text-muted-foreground mt-1">🕐 {ceremonyTime}</p>
+            <p className="text-sm text-muted-foreground mt-1">🕐 {ceremonyTime} AM</p>
             {ceremonyMapSrc ? (
               <div className="mt-4 overflow-hidden rounded-xl border border-border bg-card">
                 <iframe
@@ -776,27 +777,82 @@ export default function InvitationPage() {
 
         <Section>
           <SectionTitle icon="✿">Photo Memories</SectionTitle>
-          <div className="rounded overflow-hidden group">
-            {event?.couple_photo_url || event?.gallery_photos?.[0] ? (
-              <img
-                src={event.couple_photo_url || event.gallery_photos[0]}
-                alt="Souvenir"
-                className="w-full h-64 object-cover transition-transform duration-[1500ms] group-hover:scale-110"
-                loading="lazy"
-                width={1024}
-                height={1024}
-              />
+          <style>{`
+            @keyframes carousel-scroll {
+              0% {
+                transform: translateX(0);
+              }
+              100% {
+                transform: translateX(calc(-100% - 1rem));
+              }
+            }
+            
+            .carousel-container {
+              overflow: hidden;
+              border-radius: 0.5rem;
+              background-color: var(--color-muted-foreground);
+            }
+            
+            .carousel-track {
+              display: flex;
+              gap: 1rem;
+              animation: carousel-scroll ${event?.gallery_photos && event.gallery_photos.length > 0 ? (event.gallery_photos.length * 5) : 15}s linear infinite;
+              will-change: transform;
+            }
+            
+            .carousel-item {
+              flex: 0 0 100%;
+              min-width: 100%;
+              height: 16rem;
+              border-radius: 0.5rem;
+              overflow: hidden;
+            }
+            
+            .carousel-item img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+            
+            .carousel-container:hover .carousel-track {
+              animation-play-state: paused;
+            }
+          `}</style>
+          
+          <div className="carousel-container">
+            {event?.gallery_photos && event.gallery_photos.length > 0 ? (
+              <div className="carousel-track">
+                {/* Original photos */}
+                {event.gallery_photos.map((photo, idx) => (
+                  <div key={`original-${idx}`} className="carousel-item">
+                    <img src={photo} alt={`Memory ${idx}`} loading="lazy" />
+                  </div>
+                ))}
+                {/* Duplicate for seamless loop */}
+                {event.gallery_photos.map((photo, idx) => (
+                  <div key={`loop-${idx}`} className="carousel-item">
+                    <img src={photo} alt={`Memory ${idx}`} loading="lazy" />
+                  </div>
+                ))}
+              </div>
+            ) : event?.couple_photo_url ? (
+              <div className="carousel-item" style={{ height: '16rem' }}>
+                <img src={event.couple_photo_url} alt="Souvenir" loading="lazy" />
+              </div>
             ) : (
               <div className="w-full h-64 bg-muted-foreground flex items-center justify-center text-muted-foreground">
                 No photos available
               </div>
             )}
           </div>
-          <div className="flex justify-center gap-1.5 mt-4">
-            {[0, 1, 2, 3, 4, 5].map((i) => (
-              <span key={i} className={`h-1.5 rounded-full transition-all duration-500 ${i === 0 ? 'w-6 bg-primary' : 'w-1.5 bg-border'}`} />
-            ))}
-          </div>
+          
+          {event?.gallery_photos && event.gallery_photos.length > 0 && (
+            <div className="flex justify-center gap-1.5 mt-4">
+              {event.gallery_photos.map((_, i) => (
+                <span key={i} className="h-1.5 rounded-full bg-border" />
+              ))}
+            </div>
+          )}
         </Section>
 
         <Section>

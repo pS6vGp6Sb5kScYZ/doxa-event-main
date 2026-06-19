@@ -164,6 +164,30 @@ export default function SettingsPage() {
     setUploadingPhoto(false);
   };
 
+  const handleGalleryPhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !event) return;
+
+    setUploadingPhoto(true);
+    const fileName = `${event.id}-gallery-${Date.now()}.jpg`;
+    const { error } = await supabase.storage.from('wedding-photos').upload(fileName, file);
+
+    if (error) {
+      setMessage({ type: 'error', text: 'Erreur d\'upload: ' + error.message });
+    } else {
+      const { data } = supabase.storage.from('wedding-photos').getPublicUrl(fileName);
+      const existingPhotos = form.gallery_photos || [];
+      setForm({ ...form, gallery_photos: [...existingPhotos, data.publicUrl] });
+      setMessage({ type: 'success', text: 'Photo de galerie ajoutée.' });
+    }
+    setUploadingPhoto(false);
+  };
+
+  const removeGalleryPhoto = (index: number) => {
+    const photos = form.gallery_photos || [];
+    setForm({ ...form, gallery_photos: photos.filter((_, i) => i !== index) });
+  };
+
   const showSkeleton = eventLoading && !event && !Object.keys(form).length;
 
   if (showSkeleton) {
@@ -494,6 +518,45 @@ export default function SettingsPage() {
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
+              </div>
+            )}
+          </div>
+
+          <div className="card p-6 space-y-4">
+            <h2 className="font-serif text-lg text-stone-700">Galerie de souvenirs (boucle)</h2>
+            <p className="text-xs text-stone-500">Ajoutez plusieurs photos qui s'afficheront en boucle sur la section "Photo Memories" de l'invitation</p>
+
+            <label className="flex flex-col items-center gap-3 p-4 border-2 border-dashed border-stone-200 rounded-xl hover:border-terracotta-300 hover:bg-terracotta-50/30 cursor-pointer transition-all">
+              <Upload className="w-5 h-5 text-stone-400" />
+              <div className="text-center">
+                <p className="text-sm font-medium text-stone-700">Cliquez pour ajouter une photo</p>
+                <p className="text-xs text-stone-500">JPG, PNG jusqu'à 5MB</p>
+              </div>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleGalleryPhotoUpload}
+                disabled={uploadingPhoto}
+                className="hidden"
+              />
+            </label>
+
+            {form.gallery_photos && form.gallery_photos.length > 0 && (
+              <div className="space-y-3">
+                <p className="text-xs text-stone-600 font-medium">{form.gallery_photos.length} photo(s) ajoutée(s)</p>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {form.gallery_photos.map((photo, idx) => (
+                    <div key={idx} className="relative rounded-lg overflow-hidden bg-stone-100 h-24 group">
+                      <img src={photo} alt={`Gallery ${idx}`} className="w-full h-full object-cover" />
+                      <button
+                        onClick={() => removeGalleryPhoto(idx)}
+                        className="absolute inset-0 bg-black/0 group-hover:bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
+                      >
+                        <Trash2 className="w-4 h-4 text-white" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
