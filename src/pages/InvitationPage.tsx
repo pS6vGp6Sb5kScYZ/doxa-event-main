@@ -600,12 +600,12 @@ export default function InvitationPage() {
       <Petals />
       <main className="max-w-2xl mx-auto space-y-5 relative z-10">
         <Section>
-          <div className="text-center py-8 px-12 sm:px-16 md:px-20">
+          <div className="text-center py-10 px-6 sm:px-12 md:px-16 lg:px-20">
             <div className="ornament mb-6 text-xs">✦</div>
-            <h1 className="font-script text-5xl md:text-6xl leading-tight shimmer-title break-words">
+            <h1 className="font-script text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-snug shimmer-title break-normal tracking-tight">
               {(groomName || brideName) ? (
                 <>
-                  {groomName} &<br />{brideName}
+                  {groomName} &amp;<br />{brideName}
                 </>
               ) : (
                 <>Invitation</>
