@@ -530,10 +530,10 @@ export default function InvitationPage() {
   const inviteText = event?.invite_text ?? 'joyfully invite you to celebrate their wedding.';
   const ceremonyLocation = event?.ceremony_location ?? 'Tabernacle Church';
   const ceremonyAddress = event?.ceremony_address ?? '123 Revolution Avenue, Kampala';
-  const ceremonyTime = event?.ceremony_time ?? '08h30 précise';
-  const receptionLocation = event?.reception_location ?? 'Salle MONA';
+  const ceremonyTime = event?.ceremony_time ?? '8:30 AM sharp';
+  const receptionLocation = event?.reception_location ?? 'Mona Hall';
   const receptionAddress = event?.reception_address ?? '456 30 June Blvd, Kampala';
-  const receptionTime = event?.reception_time ?? '16h30 - 19h00';
+  const receptionTime = event?.reception_time ?? '4:30 PM - 7:00 PM';
   const tableName = guest?.table_name ?? "Sweet Star of Love";
   const seats = guest?.seats ?? 1;
   const dressCode = event?.dress_code ?? 'smart evening outfit';
@@ -629,17 +629,17 @@ export default function InvitationPage() {
         <Section>
           <div className="text-center py-10 px-6 sm:px-12 md:px-16 lg:px-20">
             <div className="ornament mb-6 text-xs">✦</div>
-            <h1 className="font-script text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-snug shimmer-title tracking-tight">
+            <h1 className="font-script text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-snug shimmer-title tracking-tight">
               {(groomName || brideName) ? (
                 <div
                   ref={nameContainerRef}
-                  className={`inline-flex items-center justify-center gap-3 ${forceStack ? 'flex-col' : 'flex-row'} sm:flex-col sm:gap-0`}
+                  className={`inline-flex items-center justify-center gap-3 ${forceStack ? 'flex-col' : 'flex-col sm:flex-row'} sm:gap-3`}
                 >
-                  <span ref={groomNameRef} className="whitespace-nowrap text-2xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight">
+                  <span ref={groomNameRef} className="whitespace-nowrap text-4xl sm:text-6xl md:text-7xl lg:text-8xl leading-tight">
                     {groomName}
                   </span>
-                  <span className="hidden sm:inline-block my-2 text-4xl md:text-5xl text-primary-foreground/90">&amp;</span>
-                  <span ref={brideNameRef} className="whitespace-nowrap text-2xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight">
+                  <span className="hidden sm:inline-block my-2 text-5xl md:text-6xl text-primary-foreground/90">&amp;</span>
+                  <span ref={brideNameRef} className="whitespace-nowrap text-4xl sm:text-6xl md:text-7xl lg:text-8xl leading-tight">
                     {brideName}
                   </span>
                 </div>
@@ -932,7 +932,9 @@ export default function InvitationPage() {
           <div className="rounded-lg border border-border bg-card p-4 flex flex-col items-center gap-4">
             <QRCodeDisplay value={inviteUrl} size={220} />
 
-            <p className="text-xs text-muted-foreground break-all text-center">{inviteUrl}</p>
+            <p className="text-sm text-center text-muted-foreground max-w-xs">
+              Download this QR code and present it at the entrance.
+            </p>
           </div>
         </Section>
 
