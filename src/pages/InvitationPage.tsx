@@ -602,11 +602,17 @@ export default function InvitationPage() {
         <Section>
           <div className="text-center py-10 px-6 sm:px-12 md:px-16 lg:px-20">
             <div className="ornament mb-6 text-xs">✦</div>
-            <h1 className="font-script text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-snug shimmer-title break-normal tracking-tight">
+            <h1 className="font-script text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-snug shimmer-title tracking-tight">
               {(groomName || brideName) ? (
-                <>
-                  {groomName} &amp;<br />{brideName}
-                </>
+                <span className="inline-flex items-center justify-center gap-3 sm:flex-col sm:gap-0">
+                  <span className="whitespace-nowrap text-2xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight">
+                    {groomName}
+                  </span>
+                  <span className="hidden sm:inline-block my-2 text-4xl md:text-5xl text-primary-foreground/90">&amp;</span>
+                  <span className="whitespace-nowrap text-2xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight">
+                    {brideName}
+                  </span>
+                </span>
               ) : (
                 <>Invitation</>
               )}
