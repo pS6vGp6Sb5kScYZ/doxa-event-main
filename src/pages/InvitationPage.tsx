@@ -638,7 +638,7 @@ export default function InvitationPage() {
                   <span ref={groomNameRef} className="block w-full max-w-full text-center break-words text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-tight">
                     {groomName}
                   </span>
-                  <span className="hidden sm:inline-block my-2 text-5xl md:text-6xl text-primary-foreground/90">&amp;</span>
+                  <span className="inline-block my-2 text-4xl sm:text-5xl md:text-6xl text-primary-foreground/90">&amp;</span>
                   <span ref={brideNameRef} className="block w-full max-w-full text-center break-words text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-tight">
                     {brideName}
                   </span>
