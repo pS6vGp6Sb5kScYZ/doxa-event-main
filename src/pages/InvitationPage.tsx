@@ -629,17 +629,17 @@ export default function InvitationPage() {
         <Section>
           <div className="text-center py-10 px-6 sm:px-12 md:px-16 lg:px-20">
             <div className="ornament mb-6 text-xs">✦</div>
-            <h1 className="font-script text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-snug shimmer-title tracking-tight">
+            <h1 className="font-script text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-snug shimmer-title tracking-tight break-words">
               {(groomName || brideName) ? (
                 <div
                   ref={nameContainerRef}
-                  className={`inline-flex items-center justify-center gap-3 ${forceStack ? 'flex-col' : 'flex-col sm:flex-row'} sm:gap-3`}
+                  className={`flex w-full min-w-0 flex-col items-center justify-center gap-3 ${forceStack ? 'flex-col' : 'sm:flex-row'} sm:gap-3`}
                 >
-                  <span ref={groomNameRef} className="whitespace-nowrap text-4xl sm:text-6xl md:text-7xl lg:text-8xl leading-tight">
+                  <span ref={groomNameRef} className="block w-full max-w-full text-center break-words text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-tight">
                     {groomName}
                   </span>
                   <span className="hidden sm:inline-block my-2 text-5xl md:text-6xl text-primary-foreground/90">&amp;</span>
-                  <span ref={brideNameRef} className="whitespace-nowrap text-4xl sm:text-6xl md:text-7xl lg:text-8xl leading-tight">
+                  <span ref={brideNameRef} className="block w-full max-w-full text-center break-words text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-tight">
                     {brideName}
                   </span>
                 </div>
