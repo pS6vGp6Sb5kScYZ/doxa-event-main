@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
 import QRCode from 'qrcode';
-import logoSrc from '../assets/logo.png';
 
 interface Props {
   value: string;
@@ -46,24 +45,6 @@ export default function QRCodeDisplay({ value, size = 200, className = '' }: Pro
 
         const ctx = canvas.getContext('2d');
         if (!ctx) throw new Error('Impossible de récupérer le contexte 2D du canvas');
-
-        const image = new Image();
-        const logoSize = size * 0.32;
-        const x = (size - logoSize) / 2;
-        const y = (size - logoSize) / 2;
-
-        await new Promise<void>((resolve) => {
-          image.onload = () => {
-            try {
-              ctx.drawImage(image, x, y, logoSize, logoSize);
-            } catch (e) {
-              // ignore draw errors
-            }
-            resolve();
-          };
-          image.onerror = () => resolve(); // ignore logo load failure
-          image.src = logoSrc;
-        });
 
         // Use blob URL (more memory-friendly than data URL for many images)
         await new Promise<void>((resolve) => {
