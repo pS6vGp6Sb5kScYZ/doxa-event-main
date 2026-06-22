@@ -576,8 +576,10 @@ export default function InvitationPage() {
     return null;
   };
 
-  const ceremonyDirectionsLink = getDirectionsLink(ceremonyAddress, event?.ceremony_map_url ?? null);
-  const receptionDirectionsLink = getDirectionsLink(receptionAddress, event?.reception_map_url ?? null);
+  const ceremonyMapUrl = event?.ceremony_map_url ?? event?.ceremony_map_embed ?? null;
+  const receptionMapUrl = event?.reception_map_url ?? event?.reception_map_embed ?? null;
+  const ceremonyDirectionsLink = getDirectionsLink(ceremonyAddress, ceremonyMapUrl);
+  const receptionDirectionsLink = getDirectionsLink(receptionAddress, receptionMapUrl);
 
   const displayedGuestbook = dbGuestbook.length
     ? dbGuestbook.map((m) => ({

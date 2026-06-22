@@ -59,7 +59,12 @@ export default function SettingsPage() {
     }
 
     const cached = loadSettingsCache(event.id);
-    setForm(cached || event);
+    const source = cached || event;
+    setForm({
+      ...source,
+      ceremony_map_url: source.ceremony_map_url ?? source.ceremony_map_embed ?? null,
+      reception_map_url: source.reception_map_url ?? source.reception_map_embed ?? null,
+    });
   }, [event?.id]);
 
   useEffect(() => {
@@ -108,7 +113,33 @@ export default function SettingsPage() {
     if (!event) return;
     setSaving(true);
     setMessage(null);
-    const { error } = await supabase.from('event_settings').update(form).eq('id', event.id);
+
+    const payload = { ...form };
+    let { error } = await supabase.from('event_settings').update(payload).eq('id', event.id);
+
+    if (error && /ceremony_map_url|reception_map_url|Could not find/i.test(error.message)) {
+      const fallbackPayload = { ...payload };
+      if ('ceremony_map_url' in fallbackPayload) {
+        fallbackPayload.ceremony_map_embed = fallbackPayload.ceremony_map_url;
+        delete fallbackPayload.ceremony_map_url;
+      }
+      if ('reception_map_url' in fallbackPayload) {
+        fallbackPayload.reception_map_embed = fallbackPayload.reception_map_url;
+        delete fallbackPayload.reception_map_url;
+      }
+
+      const { error: fallbackError } = await supabase.from('event_settings').update(fallbackPayload).eq('id', event.id);
+      if (fallbackError) {
+        setMessage({ type: 'error', text: fallbackError.message });
+      } else {
+        setMessage({ type: 'success', text: 'Paramètres enregistrés avec succès.' });
+        refresh();
+        setForm({});
+      }
+      setSaving(false);
+      return;
+    }
+
     if (error) {
       setMessage({ type: 'error', text: error.message });
     } else {
@@ -426,7 +457,7 @@ export default function SettingsPage() {
               <textarea
                 className="input-field resize-none"
                 rows={3}
-                value={form.ceremony_map_url || ''}
+                value={form.ceremony_map_url ?? form.ceremony_map_embed ?? ''}
                 onChange={e => setForm({ ...form, ceremony_map_url: e.target.value })}
                 placeholder="Collez ici l'URL de partage Google Maps pour la cérémonie"
               />
@@ -473,7 +504,7 @@ export default function SettingsPage() {
               <textarea
                 className="input-field resize-none"
                 rows={3}
-                value={form.reception_map_url || ''}
+                value={form.reception_map_url ?? form.reception_map_embed ?? ''}
                 onChange={e => setForm({ ...form, reception_map_url: e.target.value })}
                 placeholder="Collez ici l'URL de partage Google Maps pour la réception"
               />
