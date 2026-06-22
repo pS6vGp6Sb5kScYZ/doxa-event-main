@@ -545,12 +545,6 @@ export default function InvitationPage() {
     ? formatFrenchDate(new Date(new Date(event.event_date).getTime() - 24 * 60 * 60 * 1000).toISOString())
     : null;
 
-  const getIframeSrc = (html: string | null | undefined) => {
-    if (!html) return null;
-    const match = html.match(/<iframe\b[^>]*\bsrc=(['"])(.*?)\1[^>]*>/i);
-    return match ? match[2] : null;
-  };
-
   // Measure name widths and force stacking when they don't fit on one line
   useEffect(() => {
     const checkOverflow = () => {
@@ -572,30 +566,18 @@ export default function InvitationPage() {
     return () => { window.removeEventListener('resize', onResize); cancelAnimationFrame(raf); };
   }, [groomName, brideName]);
 
-  const getMapUrlFromEmbed = (html: string | null | undefined) => {
-    const src = getIframeSrc(html);
-    if (!src) return null;
-    // Google Maps share URLs and embed URLs have the URL in the src attribute
-    // Extract the URL directly from the iframe src
-    return src;
-  };
-
-  const getDirectionsLink = (address: string | null | undefined, mapUrl: string | null) => {
+  const getDirectionsLink = (address: string | null | undefined, mapUrl: string | null | undefined) => {
     if (mapUrl) {
-      // If we have a map URL from the iframe, use it directly
       return mapUrl;
     }
-    // Fallback: Create a Google Maps search URL from the address
     if (address) {
-      return `https://www.google.com/maps/search/${encodeURIComponent(address)}`;
+      return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
     }
     return null;
   };
 
-  const ceremonyMapSrc = getIframeSrc(event?.ceremony_map_embed);
-  const receptionMapSrc = getIframeSrc(event?.reception_map_embed);
-  const ceremonyDirectionsLink = getDirectionsLink(ceremonyAddress, getMapUrlFromEmbed(event?.ceremony_map_embed));
-  const receptionDirectionsLink = getDirectionsLink(receptionAddress, getMapUrlFromEmbed(event?.reception_map_embed));
+  const ceremonyDirectionsLink = getDirectionsLink(ceremonyAddress, event?.ceremony_map_url ?? null);
+  const receptionDirectionsLink = getDirectionsLink(receptionAddress, event?.reception_map_url ?? null);
 
   const displayedGuestbook = dbGuestbook.length
     ? dbGuestbook.map((m) => ({
@@ -720,19 +702,6 @@ export default function InvitationPage() {
             <p className="font-serif text-lg">{ceremonyLocation}</p>
             <p className="text-sm text-muted-foreground mt-2">📍 {ceremonyAddress}</p>
             <p className="text-sm text-muted-foreground mt-1">🕐 {ceremonyTime} AM</p>
-            {ceremonyMapSrc ? (
-              <div className="mt-4 overflow-hidden rounded-xl border border-border bg-card">
-                <iframe
-                  title="Carte de la cérémonie"
-                  src={ceremonyMapSrc}
-                  className="w-full h-56"
-                  style={{ minHeight: 200 }}
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  allowFullScreen
-                />
-              </div>
-            ) : null}
             {ceremonyDirectionsLink && (
               <a 
                 href={ceremonyDirectionsLink} 
@@ -749,19 +718,6 @@ export default function InvitationPage() {
             <p className="font-serif text-lg">{receptionLocation}</p>
             <p className="text-sm text-muted-foreground mt-2">📍 {receptionAddress}</p>
             <p className="text-sm text-muted-foreground mt-1">🕐 {receptionTime}</p>
-            {receptionMapSrc ? (
-              <div className="mt-4 overflow-hidden rounded-xl border border-border bg-card">
-                <iframe
-                  title="Carte de la réception"
-                  src={receptionMapSrc}
-                  className="w-full h-56"
-                  style={{ minHeight: 200 }}
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  allowFullScreen
-                />
-              </div>
-            ) : null}
             {receptionDirectionsLink && (
               <a 
                 href={receptionDirectionsLink} 

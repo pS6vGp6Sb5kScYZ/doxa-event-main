@@ -422,15 +422,15 @@ export default function SettingsPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-stone-500 uppercase tracking-wide mb-1.5">Carte Google Maps (iframe)</label>
+              <label className="block text-xs font-medium text-stone-500 uppercase tracking-wide mb-1.5">Lien Google Maps</label>
               <textarea
                 className="input-field resize-none"
                 rows={3}
-                value={form.ceremony_map_embed || ''}
-                onChange={e => setForm({ ...form, ceremony_map_embed: e.target.value })}
-                placeholder="Collez ici le code iframe de Google Maps pour la cérémonie"
+                value={form.ceremony_map_url || ''}
+                onChange={e => setForm({ ...form, ceremony_map_url: e.target.value })}
+                placeholder="Collez ici l'URL de partage Google Maps pour la cérémonie"
               />
-              <p className="text-xs text-stone-400 mt-1">Exemple : &lt;iframe src=\"...\" width=\"600\" height=\"450\" ...&gt;&lt;/iframe&gt;</p>
+              <p className="text-xs text-stone-400 mt-1">Exemple : https://maps.app.goo.gl/s5WquCSKRkU7NTXS6 ou https://www.google.com/maps/place/...</p>
             </div>
 
             <div>
@@ -469,15 +469,15 @@ export default function SettingsPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-stone-500 uppercase tracking-wide mb-1.5">Carte Google Maps (iframe)</label>
+              <label className="block text-xs font-medium text-stone-500 uppercase tracking-wide mb-1.5">Lien Google Maps</label>
               <textarea
                 className="input-field resize-none"
                 rows={3}
-                value={form.reception_map_embed || ''}
-                onChange={e => setForm({ ...form, reception_map_embed: e.target.value })}
-                placeholder="Collez ici le code iframe de Google Maps pour la réception"
+                value={form.reception_map_url || ''}
+                onChange={e => setForm({ ...form, reception_map_url: e.target.value })}
+                placeholder="Collez ici l'URL de partage Google Maps pour la réception"
               />
-              <p className="text-xs text-stone-400 mt-1">Exemple : &lt;iframe src=\"...\" width=\"600\" height=\"450\" ...&gt;&lt;/iframe&gt;</p>
+              <p className="text-xs text-stone-400 mt-1">Exemple : https://maps.app.goo.gl/s5WquCSKRkU7NTXS6 ou https://www.google.com/maps/place/...</p>
             </div>
 
             <div>
