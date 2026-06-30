@@ -4,6 +4,7 @@ import {
   CheckCircle, Clock, XCircle, X, ScanLine, Copy, Eye
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import { guestScanService } from '../../services/guestScanService';
 import { useEvent } from '../../contexts/EventContext';
 import { Guest } from '../../lib/types';
 import QRCodeDisplay from '../../components/QRCodeDisplay';
@@ -106,15 +107,28 @@ export default function GuestManagement() {
     }
   };
 
-  const exportCSV = () => {
+  const exportCSV = async () => {
+    let allGuests = guests;
+    try {
+      if (event) {
+        const filters = { status: filter === 'all' ? undefined : filter, searchTerm: search || undefined };
+        const res = await guestScanService.listAllGuests(event.id, filters);
+        allGuests = res.guests;
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erreur lors de l\'export');
+      return;
+    }
+
     const rows = [
       ['Nom', 'Email', 'Téléphone', 'Table', 'Places', 'Statut', 'Arrivée', 'Lien invitation'],
-      ...guests.map(g => [g.name, g.email, g.phone, g.table_name, g.seats, g.status, g.checked_in ? 'Oui' : 'Non', inviteUrl(g.qr_token)]),
+      ...allGuests.map(g => [g.name, g.email, g.phone, g.table_name, String(g.seats), g.status, g.checked_in ? 'Oui' : 'Non', inviteUrl(g.qr_token)]),
     ];
-    const csv = rows.map(r => r.join(',')).join('\n');
+    const csv = rows.map(r => r.map(c => String(c).replace(/\n/g, ' ').replace(/,/g, ';')).join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = 'invites.csv'; a.click();
+    URL.revokeObjectURL(url);
   };
 
   const copyLink = (token: string) => {

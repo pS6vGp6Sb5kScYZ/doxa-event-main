@@ -275,6 +275,32 @@ class GuestScanService {
     };
   }
 
+  /**
+   * Retrieve all guests for an event, paging under the hood to avoid overloading the DB/client.
+   */
+  async listAllGuests(
+    eventId: string,
+    filters?: { status?: string; searchTerm?: string }
+  ): Promise<{ guests: Guest[]; total: number }> {
+    if (!eventId) return { guests: [], total: 0 };
+
+    const pageSize = 200;
+    let offset = 0;
+    let all: Guest[] = [];
+    let total = 0;
+
+    while (true) {
+      const res = await this.listGuestsPaginated(eventId, pageSize, offset, filters);
+      if (!res || !res.guests) break;
+      if (total === 0) total = res.total;
+      all = all.concat(res.guests);
+      offset += res.guests.length;
+      if (offset >= res.total || res.guests.length === 0) break;
+    }
+
+    return { guests: all, total };
+  }
+
   async getRecentScans(eventId: string, limit = 20): Promise<ScanEvent[]> {
     const { data, error } = await supabase
       .from('scan_events')
